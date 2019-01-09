@@ -1,0 +1,5 @@
+name = Pet Store
+description = Despliega información de la API Pet Store
+package = custom
+core = 7.x
+version = "1.0"
