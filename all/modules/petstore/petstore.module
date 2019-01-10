@@ -1,0 +1,20 @@
+<?php
+/**
+*Implements hook_block_info()
+*
+*This hook declares what blocks are provided by the module
+*/
+function petstore_block_info(){
+	$blocks['petstore_bloque_1'] = array(
+		'info' => 'Widget Pet Store'
+	);
+	return $blocks;
+}
+function petstore_block_view($delta = ''){
+
+	if($delta == 'petstore_bloque_1'){
+		$block['subjet'] = 'Widget Pet Store';
+		$block['content'] = '<h1>Datos API Pet Store </h1>';
+		}
+	return $block;
+}
