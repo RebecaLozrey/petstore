@@ -1,15 +1,89 @@
 <?php
+
+/**
+*Implements hook_permission()
+*
+*/
+
+function petstore_permission(){
+	return array(
+		'submit petstore' => array(
+			'title' => t('Submit a new entry to petstore table'),
+			'description' => t('Submite a new entry to petstore table'),
+		),
+	);
+}
+
+/**
+*Implements hook_menu()
+*
+*/
+
+function petstore_menu(){
+	$items = array();
+	$items['petstore-url'] = array(
+		'title' => 'PetStore Page Title',
+		'type' => MENU_NORMAL_ITEM,
+		'access arguments' => array('submit petstore'),
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('petstore_form'),
+	);
+	return $items;
+}
+
+/**
+*The form definition
+*
+*/
+
+function petstore_form($form, &$form_state){
+	$form['petstore_number'] = array(
+		'#type' => 'textfield',
+		'#title' => t('PetStore Test Number'),
+		'#size' => 10,
+		'#maxlength' => 10,
+		'#required' => TRUE,
+		'#description' => t('Please enter a valid number'),
+	);
+	$form['petstore_text'] = array(
+		'#type' => 'textfield',
+		'#title' => t('PetStore Short String'),
+		'#size' => 60,
+		'#maxlength' => 120,
+		'#required' => TRUE,
+	);
+	$form['petstore_textarea'] = array(
+		'#type' => 'textarea',
+		'#title' => t('PetStore Long String'),
+		'#default_value' => '',
+		'#required' => TRUE,
+	);
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Add item'),
+	);
+	return $form;
+}
+
 /**
 *Implements hook_block_info()
 *
 *This hook declares what blocks are provided by the module
 */
+
 function petstore_block_info(){
 	$blocks['petstore_bloque_1'] = array(
 		'info' => 'Widget Pet Store'
 	);
 	return $blocks;
 }
+
+/**
+*Implements hook_block_view()
+*
+*This hook passes petstore modules parameters required to render them
+*/
+
 function petstore_block_view($delta = ''){
 
 	if($delta == 'petstore_bloque_1'){
