@@ -66,6 +66,39 @@ function petstore_form($form, &$form_state){
 }
 
 /**
+*Implements hook_form_validate()
+*
+*Validation handler for the petstore_form
+*/
+function petstore_form_validate($form, &$form_state){
+	if(!is_numeric($form_state['values']['petstore_number'])){
+		form_set_error('petstore_number',t('You must enter a valid number'));
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
+/**
+*Submit handler
+*/
+function petstore_form_submit($form, &$form_state){
+	$ps_id = db_insert('petstore')
+		->fields(array(
+			'petstore_number' => $form_state['values']['petstore_number'],
+			'petstore_text' => $form_state['values']['petstore_text'],
+			'petstore_textarea' => $form_state['values']['petstore_textarea'],
+		))
+		->execute();
+	drupal_set_message(t('Your form entry has been added'));
+}
+
+
+
+
+
+
+/**
 *Implements hook_block_info()
 *
 *This hook declares what blocks are provided by the module
