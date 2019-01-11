@@ -11,6 +11,10 @@ function petstore_permission(){
 			'title' => t('Submit a new entry to petstore table'),
 			'description' => t('Submite a new entry to petstore table'),
 		),
+		'access petstore' => array(
+			'title' => t('Access a new entry in petstore table'),
+			'description' => t('Access a new entry in petstore table'),
+		),
 	);
 }
 
@@ -27,6 +31,12 @@ function petstore_menu(){
 		'access arguments' => array('submit petstore'),
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array('petstore_form'),
+	);
+	$items['petstore-table-url'] = array(
+		'title' => 'PetStore Table',
+		'type' => MENU_NORMAL_ITEM,
+		'access arguments' => array('access petstore'),
+		'page callback' => 'petstore_table',
 	);
 	return $items;
 }
@@ -83,7 +93,7 @@ function petstore_form_validate($form, &$form_state){
 *Submit handler
 */
 function petstore_form_submit($form, &$form_state){
-	$ps_id = db_insert('petstore')
+	$petstore_id = db_insert('petstore')
 		->fields(array(
 			'petstore_number' => $form_state['values']['petstore_number'],
 			'petstore_text' => $form_state['values']['petstore_text'],
@@ -96,7 +106,30 @@ function petstore_form_submit($form, &$form_state){
 
 
 
+/**
+*Petstore TABLE
+*
+*/
 
+
+function petstore_table(){
+$results = db_query("SELECT * FROM {petstore}");
+	$header = array(t('ID'),t('Número'),t('Texto'),t('Textarea'));
+	$rows = array();
+	foreach($results AS $result){
+		$rows[] = array(
+			$result->petstore_id,
+			$result->petstore_number,
+			$result->petstore_text,
+			$result->petstore_textarea,
+		);
+		
+		print_r($rows);
+		print_r($rows);
+	}
+	
+	return theme('table', array('header' => $header, 'rows' => $rows));
+}
 
 /**
 *Implements hook_block_info()
