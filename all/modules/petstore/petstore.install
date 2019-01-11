@@ -1,0 +1,47 @@
+<?php
+/**
+*
+*
+*/
+
+/**
+*
+* Implements hook_schema()
+*/
+function petstore_schema() {
+  $schema['petstore'] = array(
+    'description' => 'PetStore Table',
+    'fields' => array(
+      'petstore_id' => array(
+        'description' => 'The primary identifier for a pet',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'petstore_number' => array(
+        'description' => 'A field for storing an integer number',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'petstore_text' => array(
+        'description' => 'A field for storing a short string of text',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'petstore_textarea' => array(
+        'description' => 'A field for storing a long string of text',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'petstore_index' => array('petstore_number'),
+    ),
+    'primary key' => array('petstore_id'),
+  );
+  return $schema;
+}

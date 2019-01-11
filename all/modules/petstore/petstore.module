@@ -13,7 +13,7 @@ function petstore_block_info(){
 function petstore_block_view($delta = ''){
 
 	if($delta == 'petstore_bloque_1'){
-		$block['subjet'] = 'Widget Pet Store';
+		$block['subject'] = 'Widget Pet Store';
 		$block['content'] = '<h1>Datos API Pet Store </h1>';
 		}
 	return $block;
