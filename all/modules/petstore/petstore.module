@@ -200,30 +200,3 @@ $results = db_query("SELECT * FROM {petstore}");
 	return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
-/**
-*Implements hook_block_info()
-*
-*This hook declares what blocks are provided by the module
-*/
-
-function petstore_block_info(){
-	$blocks['petstore_bloque_1'] = array(
-		'info' => 'Widget Pet Store'
-	);
-	return $blocks;
-}
-
-/**
-*Implements hook_block_view()
-*
-*This hook passes petstore modules parameters required to render them
-*/
-
-function petstore_block_view($delta = ''){
-
-	if($delta == 'petstore_bloque_1'){
-		$block['subject'] = 'Widget Pet Store';
-		$block['content'] = '<h1>Datos API Pet Store </h1>';
-		}
-	return $block;
-}
