@@ -38,8 +38,77 @@ function petstore_menu(){
 		'access arguments' => array('access petstore'),
 		'page callback' => 'petstore_table',
 	);
+	$items['petstore-html'] = array(
+		'title' => 'Asi se ve como HTML',
+		'page callback' => 'petstore_html_page',
+		'access callback' => TRUE,
+	);
+	$items['petstore-renderable'] = array(
+		'title' => 'Display a renderabe array',
+		'page callback' => 'petstore_renderable_page',
+		'access callback' => TRUE,
+	);
 	return $items;
 }
+
+/**
+*Implements hook_theme().
+*
+*/
+
+function petstore_theme($existing, $type, $theme, $path){
+  return array(
+  
+    'petstore_function' => array(
+      'variables' => array('text1' => NULL,'text2' => NULL,)
+	  ),  
+	 
+	'petstore_template' => array(
+	  'variables' => array('text1' => NULL,'text2' => NULL,),
+	  'template' => 'petstore_template',
+      ),
+	  
+  );
+}
+
+/**
+*Callback function using HTML output
+*
+*/
+
+function petstore_html_page(){
+$text1 = "Data from a database";
+return theme('petstore_function',array('text1' => $text1, 'text2' => 'TEXTO2!'));
+}
+
+/**
+*Callback function using RENDERABLE array
+*
+*/
+
+function petstore_renderable_page(){
+	$text1 = "This is text one";
+	$output = array(
+		'#theme' => 'petstore_template',
+		'#type' => 'markup',
+		'#text1' => $text1,
+		'#text2' => 'TEXT TWOOOO',
+	);
+	return $output;
+}
+
+/**
+*Theme function Example
+*
+*/
+
+function theme_petstore_function($variables){
+	$output = "<h2>".$variables['text1']."</h2>";
+	$output .= "<p>".$variables['text2']."</p>";
+	return $output;
+}
+
+
 
 /**
 *The form definition
@@ -118,10 +187,10 @@ $results = db_query("SELECT * FROM {petstore}");
 	$rows = array();
 	foreach($results AS $result){
 		$rows[] = array(
-			$result->petstore_id,
-			$result->petstore_number,
-			$result->petstore_text,
-			$result->petstore_textarea,
+			check_plain($result->petstore_id),
+			check_plain($result->petstore_number),
+			check_plain($result->petstore_text),
+			check_plain($result->petstore_textarea),
 		);
 		
 		print_r($rows);
