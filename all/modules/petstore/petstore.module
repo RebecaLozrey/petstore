@@ -32,6 +32,13 @@ function petstore_menu(){
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array('petstore_form'),
 	);
+	$items['petstore-url2'] = array(
+		'title' => 'Pets Create Form',
+		'type' => MENU_NORMAL_ITEM,
+		'access arguments' => array('submit petstore'),
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('petstore_form2'),
+	);
 	$items['petstore-table-url'] = array(
 		'title' => 'PetStore Table',
 		'type' => MENU_NORMAL_ITEM,
@@ -39,7 +46,7 @@ function petstore_menu(){
 		'page callback' => 'petstore_table',
 	);
 		$items['petstore-table-url2'] = array(
-		'title' => 'PetStore Table2',
+		'title' => 'Simple Table of Pets',
 		'type' => MENU_NORMAL_ITEM,
 		'access callback' => TRUE,
 		'page callback' => 'petstore_table2',
@@ -233,21 +240,33 @@ function petstore_table2(){
 			$obj = json_decode($response, true);
 			
 			$pet_id = $obj['id'];
-			$pet_category = $obj['category'];
+			if (isset($obj['Category']['id'])) {
+				$pet_cat_id = $obj['Category']['id'];
+				}
+				else{$pet_cat_id = '0';
+				}
+			if (isset($obj['Category']['id'])) {
+				$pet_cat_na = $obj['Category']['name'];
+				}
+				else{$pet_cat_na = 'null';
+				}
 			$pet_name = $obj['name'];
+			$photoU = $obj['photoUrls'];
 			$pet_status = $obj['status'];
 			
 			$rows[$i] = array(
 				$pet_id,
-				$pet_category,
+				$pet_cat_id,
+				$pet_cat_na,
 				$pet_name,
+				$photoU,
 				$pet_status
 			);
 		} else {
 			$rows[$i] = array();
 		}
 	}
-	$header = array(t('PET ID'),t('CATEGORY'),t('NAME'),t('STATUS'));
+	$header = array(t('PET ID'),t('CATEGORY_ID'),t('CATEGORY_NAME'),t('NAME'),t('IMAGE'),t('STATUS'));
 	
 	return theme('table', array('header' => $header, 'rows' => $rows));
 }
