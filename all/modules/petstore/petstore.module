@@ -38,6 +38,12 @@ function petstore_menu(){
 		'access arguments' => array('access petstore'),
 		'page callback' => 'petstore_table',
 	);
+		$items['petstore-table-url2'] = array(
+		'title' => 'PetStore Table2',
+		'type' => MENU_NORMAL_ITEM,
+		'access callback' => TRUE,
+		'page callback' => 'petstore_table2',
+	);
 	$items['petstore-html'] = array(
 		'title' => 'Asi se ve como HTML',
 		'page callback' => 'petstore_html_page',
@@ -48,6 +54,7 @@ function petstore_menu(){
 		'page callback' => 'petstore_renderable_page',
 		'access callback' => TRUE,
 	);
+		
 	return $items;
 }
 
@@ -193,10 +200,54 @@ $results = db_query("SELECT * FROM {petstore}");
 			check_plain($result->petstore_textarea),
 		);
 		
-		print_r($rows);
-		print_r($rows);
+		print_r($results);
+
 	}
 	
 	return theme('table', array('header' => $header, 'rows' => $rows));
 }
 
+/**
+*Petstore TABLE
+*
+*/
+
+function petstore_table2(){
+	ini_set("allow_url_fopen", 1);
+	$rows = array();
+	$ceiling = 50;
+	
+	for($i = 0; $i < $ceiling; $i++){	
+		$pid = $i + 1;
+		$uri = 'https://petstore.swagger.io/v2/pet/'.$pid;
+		$uri_headers = @get_headers($uri);
+		
+		if($uri_headers[0] == 'HTTP/1.1 404 Not Found') {
+			$response = false;
+		}
+		else {
+			$response = file_get_contents($uri);
+		}
+		if ($response) {
+		
+			$obj = json_decode($response, true);
+			
+			$pet_id = $obj['id'];
+			$pet_category = $obj['category'];
+			$pet_name = $obj['name'];
+			$pet_status = $obj['status'];
+			
+			$rows[$i] = array(
+				$pet_id,
+				$pet_category,
+				$pet_name,
+				$pet_status
+			);
+		} else {
+			$rows[$i] = array();
+		}
+	}
+	$header = array(t('PET ID'),t('CATEGORY'),t('NAME'),t('STATUS'));
+	
+	return theme('table', array('header' => $header, 'rows' => $rows));
+}
