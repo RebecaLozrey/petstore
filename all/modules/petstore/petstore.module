@@ -51,26 +51,46 @@ function petstore_form($form, &$form_state){
 */
 
 function petstore_form_submit($form, &$form_state) {
-	$state = var_export($form_state,true);
+	//$state = var_export($form_state,true);
 	$pet_name = $form_state['input']['pet_name'];	
 	$form_data = array(
-						'name' => $pet_name,
+						  'id' => 35,
+						  'category' => array (
+										'id' => 1,
+										'name' => 'string',),
+						  'name' => $pet_name,
+						  'photoUrls' => array (
+										0 => 'string',),
+						  'tags' => array (
+									0 => array (
+										'id' => 0,
+										'name' => 'string',),),
+						  'status' => 'available',
 						);
-	$query = http_build_query($form_data);
+	$headers = array(
+					'accept: application/xml',
+					'Content-Type: application/json',
+					);
+	$tosend = var_export($form_data,true);
+	//$query = http_build_query($form_data);
+	$query = json_encode($form_data);
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL,"https://petstore.swagger.io/v2/pet");
+	curl_setopt($ch, CURLOPT_URL,'https://petstore.swagger.io/v2/pet');
+	curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
-	$output = curl_exec($ch);
+	$resp = curl_exec($ch);
+	if($resp) {
+		$output = json_decode($resp);
+	}
 	curl_close($ch);
 	
 	
-	drupal_set_message(
-	'<pre>'.$state.'</pre><br><b>Pets Name</b><br>'.
-	$pet_name.'<br><b>Query</b><br>'.$query.'<br>'.
-	'<b>Respuesta Swagger:</b><br>'.$output.'<br>'
-	);
+	drupal_set_message('<br><b>Pet Name:</b><br>'.$pet_name.'<br>'.
+	'<b>Array:</b><br>'.$tosend.'<br>'.
+	'<b>Query:</b><br>'.$query.'<br>'.
+	'<b>Swagger Response:</b><br>'.$resp.'<br>');
 
 
 }
