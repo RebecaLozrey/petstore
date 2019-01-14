@@ -8,7 +8,7 @@
 function petstore_menu(){
 	$items = array();
 
-		$items['petstore-table-url2'] = array(
+	$items['petstore-table-url2'] = array(
 		'title' => 'Simple Table of Pets',
 		'type' => MENU_NORMAL_ITEM,
 		'access callback' => TRUE,
@@ -21,12 +21,13 @@ function petstore_menu(){
 		'page callback' => 'drupal_get_form',
 		'page arguments' => array('petstore_form'),
 	);
-		
+	
+	
 	return $items;
 }
 
 /**
-*Theme template for petstore
+*Form to add a Pet
 */
 
 function petstore_form($form, &$form_state){
@@ -45,12 +46,34 @@ function petstore_form($form, &$form_state){
 	return $form;
 }
 
+/**
+*Submit a Pet
+*/
 
 function petstore_form_submit($form, &$form_state) {
-	$result = $form_state['input']['pet_name'];
-	drupal_set_message('<pre>'.var_export($form_state,true).'</pre>');
-}
+	$state = var_export($form_state,true);
+	$pet_name = $form_state['input']['pet_name'];	
+	$form_data = array(
+						'name' => $pet_name,
+						);
+	$query = http_build_query($form_data);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL,"https://petstore.swagger.io/v2/pet");
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+	$output = curl_exec($ch);
+	curl_close($ch);
+	
+	
+	drupal_set_message(
+	'<pre>'.$state.'</pre><br><b>Pets Name</b><br>'.
+	$pet_name.'<br><b>Query</b><br>'.$query.'<br>'.
+	'<b>Respuesta Swagger:</b><br>'.$output.'<br>'
+	);
 
+
+}
 
 /**
 *Petstore TABLE
